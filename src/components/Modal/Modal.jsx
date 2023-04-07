@@ -1,49 +1,43 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 import { Overlay, ModalBox, Img } from './Modal.styled';
 
 import PropTypes from 'prop-types';
 
-export class Modal extends React.Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.closeOnEscape);
-    document.addEventListener('click', this.closeOnClick);
-  }
+export const Modal = ({ src, alt, closeModal, isModalOpen }) => {
+  useEffect(() => {
+    document.addEventListener('keydown', closeOnEscape);
+    document.addEventListener('click', closeOnClick);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.removeEventListener('click', closeOnClick);
+    };
+  });
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.closeOnEscape);
-    document.removeEventListener('click', this.closeOnClick);
-  }
-
-  closeOnEscape = event => {
+  const closeOnEscape = event => {
     if (event.code === 'Escape') {
-      this.props.closeModal();
+      closeModal();
     }
   };
 
-  closeOnClick = event => {
-    if (
-      this.props.isModalOpen === true &&
-      event.target.src !== this.props.src
-    ) {
-      this.props.closeModal();
+  const closeOnClick = event => {
+    if (isModalOpen === true && event.target.src !== src) {
+      closeModal();
     }
   };
 
-  render() {
-    return (
-      <Overlay>
-        <ModalBox>
-          <Img src={this.props.src} alt={this.props.alt} />
-        </ModalBox>
-      </Overlay>
-    );
-  }
-}
+  return (
+    <Overlay>
+      <ModalBox>
+        <Img src={src} alt={alt} />
+      </ModalBox>
+    </Overlay>
+  );
+};
 
 Modal.propTypes = {
   src: PropTypes.string.isRequired,
   alt: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
-  isModalOpen: PropTypes.bool.isRequired
+  isModalOpen: PropTypes.bool.isRequired,
 };

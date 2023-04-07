@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -7,54 +7,49 @@ import { Searchbar } from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Modal } from 'components/Modal/Modal';
 
-export class App extends Component {
-  state = {
-    textSearch: '',
-    isModalOpen: false,
-    modalImgSrc: '',
-    modalImgAlt: '',
+export const App = () => {
+  const [textSearch, setTextSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImgSrc, setModalImgSrc] = useState('');
+  const [modalImgAlt, setModalImgAlt] = useState('');
+
+  const handleSubmitForm = inputValue => {
+    setTextSearch(inputValue.value);
   };
 
-  handleSubmitForm = inputValue => {
-    this.setState({ textSearch: inputValue.value });
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
-  openModal = () => {
-    this.setState({ isModalOpen: true });
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
+  const getModalProps = (src, alt, isModalOpen) => {
+    setModalImgSrc(src);
+    setModalImgAlt(alt);
+    setIsModalOpen(isModalOpen);
+
+    openModal();
   };
 
-  getModalProps = modalProps => {
-    this.setState({
-      modalImgSrc: modalProps.src,
-      modalImgAlt: modalProps.alt,
-      isModalOpen: modalProps.isModalOpen,
-    });
-    this.openModal();
-  };
-
-  render() {
-    return (
-      <div>
-        <Toaster position="top-right" toastOptions={{ duration: 2000 }} />
-        <Searchbar onSubmitForm={this.handleSubmitForm}></Searchbar>
-        <ImageGallery
-          request={this.state.textSearch}
-          getModalData={this.getModalProps}
-        ></ImageGallery>
-        {this.state.isModalOpen === true && (
-          <Modal
-            src={this.state.modalImgSrc}
-            alt={this.state.modalImgAlt}
-            closeModal={this.closeModal}
-            isModalOpen={this.state.isModalOpen}
-          ></Modal>
-        )}
-        <GlobalStyle></GlobalStyle>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Toaster position="top-right" toastOptions={{ duration: 2000 }} />
+      <Searchbar onSubmitForm={handleSubmitForm}></Searchbar>
+      <ImageGallery
+        request={textSearch}
+        getModalData={getModalProps}
+      ></ImageGallery>
+      {isModalOpen === true && (
+        <Modal
+          src={modalImgSrc}
+          alt={modalImgAlt}
+          closeModal={closeModal}
+          isModalOpen={isModalOpen}
+        ></Modal>
+      )}
+      <GlobalStyle></GlobalStyle>
+    </div>
+  );
+};

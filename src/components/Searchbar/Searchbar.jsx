@@ -7,10 +7,11 @@ import { Header, Field, Button } from './Searchbar.styled';
 
 export const Searchbar = ({ onSubmitForm }) => {
   const handleSubmit = (values, actions) => {
+    const resetPage = 1;
     if (values.value === '') {
       return toast.error('Please enter the query parameters!');
     } else {
-      onSubmitForm(values);
+      onSubmitForm(values, resetPage);
       actions.resetForm();
     }
   };
