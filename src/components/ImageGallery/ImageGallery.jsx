@@ -19,7 +19,6 @@ export const ImageGallery = ({ request, getModalData }) => {
 
   const fetchImages = async (request, page) => {
     try {
-      setPage(1);
       setStatus('pending');
       const imagesData = await getImages(request.trim(), page);
       if (imagesData.hits.length === 0) {
@@ -60,7 +59,7 @@ export const ImageGallery = ({ request, getModalData }) => {
   };
 
   const onLoadMore = () => {
-    setPage(prevState => prevState + 1);
+    setPage(images.length/12 + 1);
     setQuery(request);
   };
 
@@ -74,7 +73,7 @@ export const ImageGallery = ({ request, getModalData }) => {
 
   useEffect(() => {
     if (request !== query) {
-      fetchImages(request, page);
+      fetchImages(request, 1);
     }
 
     if (page > 1 && request === query) {
